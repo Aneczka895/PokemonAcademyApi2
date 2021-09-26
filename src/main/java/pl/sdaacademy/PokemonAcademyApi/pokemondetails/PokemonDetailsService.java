@@ -20,15 +20,12 @@ public class PokemonDetailsService {
         this.pokemonDetailsTransformer = pokemonDetailsTransformer;
     }
 
-    /*
-    Przygotować strukturę o nazwie PokemonDeatils która upraszczała by dane zwrócone z backendu
-     */
+
     public PokemonDetails getPokemonDetails(String pokemonName) {
         Pokemon pokemon = pokemonRepository.findByName(pokemonName)
                 .orElseThrow(() -> new NoPokemonFoundException(pokemonName));
         PokemonDetailsResponse pokemonDetailsResponse = pokemonDetailsNetworkRepository.fetchPokemonDetails(pokemon.getId());
-        PokemonDetails pokemonDetails = pokemonDetailsTransformer.toEntity(pokemonDetailsResponse);
-        return pokemonDetails;
+        return pokemonDetailsTransformer.toEntity(pokemonDetailsResponse);
     }
 
 }

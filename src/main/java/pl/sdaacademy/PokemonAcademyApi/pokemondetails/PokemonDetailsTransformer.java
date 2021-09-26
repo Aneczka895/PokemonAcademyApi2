@@ -14,12 +14,12 @@ public class PokemonDetailsTransformer {
         pokemonDetails.setHeight(response.getHeight());
         pokemonDetails.setWeight(response.getWeight());
         pokemonDetails.setAbilities(response.getAbilities().stream()
-                .map(abilities -> abilities.getAbility())
-                .map(abilityItem -> abilityItem.getName())
+                .map(Abilities::getAbility)
+                .map(AbilityItem::getName)
                 .collect(Collectors.toList()));
         pokemonDetails.setTypes(response.getTypes().stream()
-                .map(types -> types.getType())
-                .map(type -> type.getName())
+                .map(Types::getType)
+                .map(Type::getName)
                 .collect(Collectors.toList()));
         return pokemonDetails;
     }
