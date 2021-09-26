@@ -9,12 +9,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pokemon")
-public class PokemonListController {
+class PokemonListController {
 
     private final PokemonListService pokemonListService;
 
     @Autowired
-    public PokemonListController(PokemonListService pokemonListService) {
+    PokemonListController(PokemonListService pokemonListService) {
         this.pokemonListService = pokemonListService;
     }
 

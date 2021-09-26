@@ -4,13 +4,13 @@ import java.util.List;
 
 public class PokemonListResult {
     private String next;
-    private List<Pokemon> results;
+    private List<PokemonItem> results;
 
-    public List<Pokemon> getResults() {
+    public List<PokemonItem> getResults() {
         return results;
     }
 
-    public void setResults(List<Pokemon> results) {
+    public void setResults(List<PokemonItem> results) {
         this.results = results;
     }
 

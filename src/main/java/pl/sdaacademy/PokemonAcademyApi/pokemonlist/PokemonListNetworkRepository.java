@@ -1,16 +1,24 @@
 package pl.sdaacademy.PokemonAcademyApi.pokemonlist;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 @Repository
-public class PokemonListNetworkRepository {
+class PokemonListNetworkRepository {
 
-    private final String URL_FORMAT = "https://pokeapi.co/api/v2/pokemon/?offset=%d&limit=%d";
+    private final static String ENDPOINT = "pokemon/?offset=%d&limit=%d";
+    private final RestTemplate restTemplate;
+    private final String endpointUrl;
 
-    public PokemonListResult fetchPokemonList(int offset, int limit) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = String.format(URL_FORMAT, offset, limit);
+    PokemonListNetworkRepository(@Value("${pokeapi.url}") String baseUrl,
+                                        RestTemplate restTemplate) {
+        this.endpointUrl = baseUrl + ENDPOINT;
+        this.restTemplate = restTemplate;
+    }
+
+    PokemonListResult fetchPokemonList(int offset, int limit) {
+        String url = String.format(endpointUrl, offset, limit);
         return restTemplate.getForObject(url, PokemonListResult.class);
     }
 }

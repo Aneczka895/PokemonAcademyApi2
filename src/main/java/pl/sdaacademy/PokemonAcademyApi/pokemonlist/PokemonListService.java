@@ -5,19 +5,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class PokemonListService {
+class PokemonListService {
     private final PokemonRepository pokemonRepository;
     private final PokemonListNetworkRepository pokemonListNetworkRepository;
+    private final PokemonTransformer pokemonTransformer;
 
     @Autowired
-    public PokemonListService(PokemonRepository pokemonRepository, PokemonListNetworkRepository pokemonListNetworkRepository) {
+    PokemonListService(PokemonRepository pokemonRepository,
+                              PokemonListNetworkRepository pokemonListNetworkRepository,
+                              PokemonTransformer pokemonTransformer) {
         this.pokemonRepository = pokemonRepository;
         this.pokemonListNetworkRepository = pokemonListNetworkRepository;
+        this.pokemonTransformer = pokemonTransformer;
     }
 
-    public List<Pokemon> getPokemonList() {
+    List<Pokemon> getPokemonList() {
         if (pokemonRepository.count() != 0) {
             return pokemonRepository.findAll();
         }
@@ -27,11 +32,10 @@ public class PokemonListService {
         PokemonListResult pokemonListResult;
         do {
             pokemonListResult = pokemonListNetworkRepository.fetchPokemonList(offset, limit);
-            pokemonListResult.getResults().forEach(pokemon -> {
-                String[] urlData = pokemon.getUrl().split("/");
-                pokemon.setId(Integer.parseInt(urlData[urlData.length-1]));
-            });
-            pokemons.addAll(pokemonListResult.getResults());
+            pokemons.addAll(pokemonListResult.getResults().stream()
+                    .map(pokemonTransformer::toEntity)
+                    .collect(Collectors.toList())
+            );
             offset+=limit;
         } while (pokemonListResult.getNext() != null);
         pokemonRepository.saveAll(pokemons);
