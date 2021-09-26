@@ -15,8 +15,8 @@ public class PokemonListService {
 
     @Autowired
     PokemonListService(PokemonRepository pokemonRepository,
-                              PokemonListNetworkRepository pokemonListNetworkRepository,
-                              PokemonTransformer pokemonTransformer) {
+                       PokemonListNetworkRepository pokemonListNetworkRepository,
+                       PokemonTransformer pokemonTransformer) {
         this.pokemonRepository = pokemonRepository;
         this.pokemonListNetworkRepository = pokemonListNetworkRepository;
         this.pokemonTransformer = pokemonTransformer;
@@ -36,7 +36,7 @@ public class PokemonListService {
                     .map(pokemonTransformer::toEntity)
                     .collect(Collectors.toList())
             );
-            offset+=limit;
+            offset += limit;
         } while (pokemonListResult.getNext() != null);
         pokemonRepository.saveAll(pokemons);
         return pokemons;

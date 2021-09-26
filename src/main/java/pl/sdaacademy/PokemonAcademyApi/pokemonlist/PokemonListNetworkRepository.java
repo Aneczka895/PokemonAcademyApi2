@@ -12,7 +12,7 @@ class PokemonListNetworkRepository {
     private final String endpointUrl;
 
     PokemonListNetworkRepository(@Value("${pokeapi.url}") String baseUrl,
-                                        RestTemplate restTemplate) {
+                                 RestTemplate restTemplate) {
         this.endpointUrl = baseUrl + ENDPOINT;
         this.restTemplate = restTemplate;
     }
