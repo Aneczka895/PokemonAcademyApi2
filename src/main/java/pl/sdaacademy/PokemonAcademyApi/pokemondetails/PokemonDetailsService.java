@@ -5,6 +5,10 @@ import org.springframework.stereotype.Service;
 import pl.sdaacademy.PokemonAcademyApi.pokemonlist.Pokemon;
 import pl.sdaacademy.PokemonAcademyApi.pokemonlist.PokemonRepository;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class PokemonDetailsService {
     private final PokemonDetailsNetworkRepository pokemonDetailsNetworkRepository;
@@ -18,6 +22,13 @@ public class PokemonDetailsService {
         this.pokemonRepository = pokemonRepository;
         this.pokemonDetailsNetworkRepository = pokemonDetailsNetworkRepository;
         this.pokemonDetailsTransformer = pokemonDetailsTransformer;
+    }
+
+    public List<PokemonDetails> getListOfPokemonDetails(String pokemonNames) {
+        String[] names = pokemonNames.split(",");
+        return Arrays.stream(names).map(name -> {
+            return getPokemonDetails(name);
+        }).collect(Collectors.toList());
     }
 
 
