@@ -13,13 +13,16 @@ import java.util.stream.Collectors;
 public class PokemonDetailsService {
     private final PokemonDetailsNetworkRepository pokemonDetailsNetworkRepository;
     private final PokemonRepository pokemonRepository;
+    private final PokemonDetailsRepository pokemonDetailsRepository;
     private final PokemonDetailsTransformer pokemonDetailsTransformer;
 
     @Autowired
     public PokemonDetailsService(PokemonDetailsNetworkRepository pokemonDetailsNetworkRepository,
                                  PokemonRepository pokemonRepository,
+                                 PokemonDetailsRepository pokemonDetailsRepository,
                                  PokemonDetailsTransformer pokemonDetailsTransformer) {
         this.pokemonRepository = pokemonRepository;
+        this.pokemonDetailsRepository = pokemonDetailsRepository;
         this.pokemonDetailsNetworkRepository = pokemonDetailsNetworkRepository;
         this.pokemonDetailsTransformer = pokemonDetailsTransformer;
     }
@@ -33,10 +36,13 @@ public class PokemonDetailsService {
 
 
     public PokemonDetails getPokemonDetails(String pokemonName) {
-        Pokemon pokemon = pokemonRepository.findByName(pokemonName)
-                .orElseThrow(() -> new NoPokemonFoundException(pokemonName));
-        PokemonDetailsResponse pokemonDetailsResponse = pokemonDetailsNetworkRepository.fetchPokemonDetails(pokemon.getId());
-        return pokemonDetailsTransformer.toEntity(pokemonDetailsResponse);
+        return pokemonDetailsRepository.findById(pokemonName).orElseGet(()->{
+            Pokemon pokemon = pokemonRepository.findByName(pokemonName)
+                    .orElseThrow(() -> new NoPokemonFoundException(pokemonName));
+            PokemonDetailsResponse pokemonDetailsResponse = pokemonDetailsNetworkRepository.fetchPokemonDetails(pokemon.getId());
+            PokemonDetails pokemonDetails = pokemonDetailsTransformer.toEntity(pokemonDetailsResponse);
+            return pokemonDetailsRepository.save(pokemonDetails);
+        });
     }
 
 }
